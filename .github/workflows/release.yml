@@ -1,0 +1,50 @@
+
+name: Publish Release
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Read plugin version
+        id: version
+        run: |
+          VERSION=$(python -c "import json; print(json.load(open('plugin.json', encoding='utf-8'))['Version'])")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Build plugin
+        run: |
+          mkdir -p package/Images package/lib
+
+          cp plugin.json main.py winget_utils.py package/
+          cp Images/app.png package/Images/
+          cp README.md package/
+
+          python -m pip install -r requirements.txt --target package/lib
+
+          cd package
+          zip -r ../Flow.Launcher.Plugin.AppManager.zip .
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          name: v${{ steps.version.outputs.version }}
+          files: Flow.Launcher.Plugin.AppManager.zip
+          generate_release_notes: true
