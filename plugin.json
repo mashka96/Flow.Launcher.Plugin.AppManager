@@ -1,0 +1,13 @@
+
+{
+  "ID": "2d619062-58e1-4a3d-b5f2-fcbc39b8a98c",
+  "ActionKeyword": "app",
+  "Name": "App Manager",
+  "Description": "Search, install, update, download and uninstall Windows applications using winget directly from Flow Launcher.",
+  "Author": "mashka96",
+  "Version": "1.0.0",
+  "Language": "python",
+  "Website": "https://github.com/mashka96/Flow.Launcher.Plugin.AppManager",
+  "IcoPath": "Images/app.png",
+  "ExecuteFileName": "main.py"
+}
