@@ -233,12 +233,29 @@ class AppManager(FlowLauncher):
                     continue
 
                 # Separate metadata labels and values.
+                
                 if ":" in line:
                     label, value = line.split(":", 1)
 
-                    details.append(
-                        result(label.strip(), value.strip())
-                    )
+                    label = label.strip()
+                    value = value.strip()
+
+                    entry = result(label, value)
+
+                    # Make installer URLs copyable.
+                    if (
+                        label.casefold() == "installer url"
+                        and value.startswith(("https://", "http://"))
+                    ):
+                        entry["CopyText"] = value
+                        entry["JsonRPCAction"] = {
+                            "method": "Flow.Launcher.CopyToClipboard",
+                            "parameters": [value, True, True],
+                            "DontHideAfterAction": True
+                        }
+
+                    details.append(entry)
+
 
                 else:
                     details.append(
